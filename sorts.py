@@ -14,8 +14,8 @@ class Sort:
             result = func(*args, **kwargs)
             print(
                 f"[{func.__name__}:size-{len(args[0])} :{multiprocessing.process.current_process().name} "
-                f"{multiprocessing.process.current_process().pid}] >>> ",
-                round(time.time() - start, 4))
+                f"process_id={multiprocessing.process.current_process().pid}] >>>",
+                round(time.time() - start, 4), 'sec')
             RESULT[func.__name__] = result
             return result
 
@@ -153,3 +153,4 @@ if '__main__' == __name__:
     Sort.testing_all(N)
     p = RESULT.values()[0]
     print(all([p == i for i in RESULT.values()]))
+    

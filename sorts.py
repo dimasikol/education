@@ -1,8 +1,6 @@
 import typing
 import multiprocessing.process
 
-RESULT = multiprocessing.Manager().dict()
-
 
 class Sort:
     @staticmethod
@@ -149,6 +147,7 @@ class Sort:
 
 
 if '__main__' == __name__:
+    RESULT = multiprocessing.Manager().dict()
     N = 10_000  # randomize elements for testing
     Sort.testing_all(N)
     p = RESULT.values()[0]

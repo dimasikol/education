@@ -19,3 +19,11 @@ education/algoritm sort structur
   + **8. ABN tree**
   + **9. prefix tree** (for text)
   + **10. heap**
+- [algorithm]
+  + **binary search**
+  + **dijkstra algorithm**
+  + **eller algorithm**
+  + ** **
+  + 5
+  + 6
+  + 7

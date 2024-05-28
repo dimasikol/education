@@ -8,3 +8,14 @@ education/algoritm sort structur
     + **5. shell sort**
     + **6. heap sort**
     + **7. quick sort**
+- [structure.py]
+  + **1. stack**
+  + **2. queue**
+  + **3. list link**
+  + **4. hash table**
+  + **5. grapf**
+  + **6. binary tree**
+  + **7. RB tree**
+  + **8. ABN tree**
+  + **9. prefix tree** (for text)
+  + **10. heap**

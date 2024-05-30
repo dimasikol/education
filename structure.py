@@ -8,13 +8,15 @@ class NodeLinkList:
 
 
 class LinkList:
-  def __init__(self, value = None):
-  
-
-
-  def check_type(self,value):
-    if isinstance(value, (int,float,str):
-        pass
-    elif isinstance(value,(iterable)):
-
-
+    def __init__(self, value = None):
+        if value is None:
+            pass
+        else:
+            self.data = self.last = NodeListLink(value)
+    def append(self, value):      
+        if hasattr(self,'data'):
+            self.last.next = NodeLinkList(value)
+            self.last.previous = self.last
+            self.last = self.last.next
+        else:
+            self.data = self.last  = NodeListLink(value)

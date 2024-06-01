@@ -54,7 +54,21 @@ class Sort:
                 array.insert(i, first)
                 break
         return array
-
+    @staticmethod
+    def gnome_sort(array: list[int | float | str]) -> list[int | float | str]:
+        i = 1
+        j = 2
+        while i<len(array):
+            if array[i-1]<array[i]:
+                i = j
+                j += 1
+            else:
+                array[i-1], array[i] = array[i], array[i-1]
+                i -= 1
+            if i==0:
+                i = j
+                j += 1
+        return array
     @staticmethod
     def heap_sort(array: list[int | float | str]) -> list[int | float | str]:
         def heapify(array0, n, index):

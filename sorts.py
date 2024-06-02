@@ -54,21 +54,43 @@ class Sort:
                 array.insert(i, first)
                 break
         return array
+
     @staticmethod
     def gnome_sort(array: list[int | float | str]) -> list[int | float | str]:
         i = 1
         j = 2
-        while i<len(array):
-            if array[i-1]<array[i]:
+        while i < len(array):
+            if array[i - 1] < array[i]:
                 i = j
                 j += 1
             else:
-                array[i-1], array[i] = array[i], array[i-1]
+                array[i - 1], array[i] = array[i], array[i - 1]
                 i -= 1
-            if i==0:
+            if i == 0:
                 i = j
                 j += 1
         return array
+
+    @staticmethod
+    def shake_sort(array: list[int | float | str]) -> list[int | float | str]:
+        left, right = 0, len(array) - 1
+        flag = True
+        while left < right and flag:
+            flag = False
+            for i in range(left, right):
+                if array[i] > array[i + 1]:
+                    array[i], array[i + 1] = array[i + 1], array[i]
+                    flag = True
+            right -= 1
+            for j in range(right, left, -1):
+                if array[j] < array[j - 1]:
+                    array[j], array[j - 1] = array[j - 1], array[j]
+                    flag = True
+            left += 1
+            if not flag:
+                break
+        return array
+
     @staticmethod
     def heap_sort(array: list[int | float | str]) -> list[int | float | str]:
         def heapify(array0, n, index):
@@ -119,6 +141,7 @@ class Sort:
             if len(array0) <= 1:
                 return array0
             return merge(heapify(array0[:len(array0) // 2]), heapify(array0[len(array0) // 2:]))
+
         return heapify(array)
 
     @staticmethod
@@ -150,14 +173,12 @@ class Sort:
         import random
         import multiprocessing
         funcs = [Sort.timings(func) for func in
-                 [Sort.quick_sort, Sort.heap_sort, Sort.shell_sort, Sort.merge_sort, Sort.insertion_sort,
-                 Sort.selection_sort, Sort.bubble_sort, Sort.base_sort]]
+                 [Sort.base_sort, Sort.quick_sort, Sort.heap_sort, Sort.shell_sort, Sort.merge_sort, Sort.insertion_sort,
+                  Sort.gnome_sort, Sort.shake_sort, Sort.selection_sort, Sort.bubble_sort, ]]
         if data is None:
             data = [random.randint(-1000, 1000) for _ in range(n)]
         data = [data.copy() for _ in range(len(funcs) + 1)]
-        processors = [multiprocessing.Process(target=func, args=(arr,)) for func, arr in zip(funcs, data)]
-        [pros.start() for pros in processors]
-        [pros.join() for pros in processors]
+        processors = [func(arr) for func, arr in zip(funcs, data)]
 
 
 if '__main__' == __name__:
@@ -166,4 +187,4 @@ if '__main__' == __name__:
     Sort.testing_all(N)
     p = RESULT.values()[0]
     print(all([p == i for i in RESULT.values()]))
-    
+

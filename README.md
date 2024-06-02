@@ -2,12 +2,14 @@
 education/algoritm sort structur 
 - [sorts.py]
     + **1. bubble sort**
-    + **2. select sort**
-    + **3. insert sort**
-    + **4. merge sort**
-    + **5. shell sort**
-    + **6. heap sort**
-    + **7. quick sort**
+    + **2. gnome sort**
+    + **3. shake sort**
+    + **4. select sort**
+    + **5. insert sort**
+    + **6. merge sort**
+    + **7. shell sort**
+    + **8. heap sort**
+    + **9. quick sort**
 - [structure.py]
   + **1. stack**
   + **2. queue**

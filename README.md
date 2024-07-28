@@ -1,6 +1,6 @@
 # education
-education/algoritm sort structur 
-- [sorts.py]
+education/algoritm, sort, structure and patterns. 
+- [sorts]
     + **1. bubble sort**
     + **2. gnome sort**
     + **3. shake sort**
@@ -10,7 +10,8 @@ education/algoritm sort structur
     + **7. shell sort**
     + **8. heap sort**
     + **9. quick sort**
-- [structure.py]
+    + **10. radix sort**
+- [structure]
   + **1. stack**
   + **2. queue**
   + **3. list link**
@@ -29,3 +30,26 @@ education/algoritm sort structur
   + 5
   + 6
   + 7
+- [patterns]
+  + **1. Visitor**
+  + **2. Template**
+  + **3. Srategy**
+  + **4. State**
+  + **5. Observer**
+  + **6. Memento**
+  + **7. Mediator**
+  + **8. Iterator**
+  + **9. Command**
+  + **10. Chain**
+  + **11. Proxy**
+  + **12. Flyweight**
+  + **13. Facade**
+  + **14. Decorator**
+  + **15. Composite**
+  + **16. Bridge**
+  + **17. Adapter**
+  + **18. Singleton**
+  + **19. Prototype**
+  + **20. Builder**
+  + **21. Abstart factory**
+  + **22. Factory method**

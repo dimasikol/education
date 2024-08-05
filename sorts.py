@@ -1,70 +1,95 @@
-import typing
-import multiprocessing.process
+import time
+import random
+import functools
+import multiprocessing as mp
 
 
-class Sort:
-    @staticmethod
-    def timings(func: typing.Callable):
-        import time
-
-        def inner(*args, **kwargs):
-            start = time.time()
-            result = func(*args, **kwargs)
-            print(
-                f"[{func.__name__}:size-{len(args[0])} :{multiprocessing.process.current_process().name} "
-                f"process_id={multiprocessing.process.current_process().pid}] >>>",
-                round(time.time() - start, 4), 'sec')
-            RESULT[func.__name__] = result
-            return result
-
-        return inner
+class Sorts:
 
     @staticmethod
-    def bubble_sort(array: list[int | float | str]) -> list[int | float | str]:
+    def buble_sort(array: list[int | str | float], clean_func=False) -> list[int | str | float]:
+        """
+        :param array:
+        :param clean_func: return new array if clean_func == False return sorted array => array.sort()
+        :return: list int or float or str don't mix type only one type
+        """
+        if clean_func:
+            array = array.copy()
         flag = True
         while flag:
             flag = False
-            for i in range(len(array) - 1):
-                if array[i] > array[i + 1]:
-                    array[i], array[i + 1] = array[i + 1], array[i]
+            i = 1
+            while i < len(array):
+                if array[i - 1] > array[i]:
+                    array[i], array[i - 1] = array[i - 1], array[i]
                     flag = True
+                i += 1
         return array
 
     @staticmethod
-    def selection_sort(array: list[int | float | str]) -> list[int | float | str]:
-        for i in (range(len(array) - 1)):
+    def selection_sort(array: list[int | str | float], clean_func=False) -> list[int | str | float]:
+        if clean_func:
+            array = array.copy()
+        for i in range(len(array) - 1, 0, -1):
             index = i
-            for k in range(i + 1, len(array)):
-                if array[index] > array[k]:
+            for k in range(i, -1, -1):
+                if array[index] < array[k]:
                     index = k
-            array[index], array[i] = array[i], array[index]
+            array[i], array[index] = array[index], array[i]
         return array
 
     @staticmethod
-    def insertion_sort(array: list[int | float | str]) -> list[int | float | str]:
-        for i in (range(1, len(array))):
-            index = i
-            while index > 1 and array[i] < array[index - 1]:
-                index -= 1
-            else:
-                array.insert(index, array.pop(i))
-        first = array.pop(0)
-        for i in range(len(array)):
-            if array[i] > first:
-                array.insert(i, first)
-                break
-        return array
-
-    @staticmethod
-    def gnome_sort(array: list[int | float | str]) -> list[int | float | str]:
+    def insertion_sort(array: list[int | str | float], clean_func=False) -> list[int | str | float]:
+        if clean_func:
+            array = array.copy()
         i = 1
-        j = 2
+        for m in range(len(array)):
+            if array[m] < array[0]:
+                array[m], array[0] = array[0], array[m]
         while i < len(array):
-            if array[i - 1] < array[i]:
+            flag = False
+            index = i
+            temp = array[index]
+            while array[index - 1] > temp:
+                index -= 1
+                flag = True
+            if flag:
+                array.insert(index, array.pop(i))
+            i += 1
+        return array
+
+    @staticmethod
+    def shake_sort(array: list[int | str | float], clean_func=False) -> list[int | str | float]:
+        if clean_func:
+            array = array.copy()
+        left, right = 0, len(array) - 1
+        while left < right:
+            index = left
+            for i in range(left, right + 1):
+                if array[index] > array[i]:
+                    index = i
+            if index != left:
+                array[index], array[left] = array[left], array[index]
+
+            left += 1
+            index = right
+            for i in range(right, left - 1, -1):
+                if array[index] < array[i]:
+                    index = i
+            array[index], array[right] = array[right], array[index]
+        return array
+
+    @staticmethod
+    def gnome_sort(array: list[int | str | float], clean_func=False) -> list[int | str | float]:
+        if clean_func:
+            array = array.copy()
+        i, j = 1, 2
+        while i < len(array):
+            if array[i] > array[i - 1]:
                 i = j
                 j += 1
             else:
-                array[i - 1], array[i] = array[i], array[i - 1]
+                array[i], array[i - 1] = array[i - 1], array[i]
                 i -= 1
             if i == 0:
                 i = j
@@ -72,154 +97,153 @@ class Sort:
         return array
 
     @staticmethod
-    def shake_sort(array: list[int | float | str]) -> list[int | float | str]:
-        left, right = 0, len(array) - 1
-        flag = True
-        while left < right and flag:
-            flag = False
-            for i in range(left, right):
-                if array[i] > array[i + 1]:
-                    array[i], array[i + 1] = array[i + 1], array[i]
-                    flag = True
-            right -= 1
-            for j in range(right, left, -1):
-                if array[j] < array[j - 1]:
-                    array[j], array[j - 1] = array[j - 1], array[j]
-                    flag = True
-            left += 1
-            if not flag:
-                break
-        return array
+    def heap_sort(array: list[int | str | float], clean_func=False) -> list[int | str | float]:
+        if clean_func:
+            array = array.copy()
 
-    @staticmethod
-    def heap_sort(array: list[int | float | str]) -> list[int | float | str]:
-        def heapify(array0, n, index):
-            largest = index
-            left = largest * 2 + 1
-            right = largest * 2 + 2
-            if left < n and array0[left] > array0[largest]:
-                largest = left
-            if right < n and array0[right] > array0[largest]:
-                largest = right
-            if largest != index:
-                array0[index], array0[largest] = array0[largest], array0[index]
-                heapify(array, n, largest)
+        def heap(arr, size, index):
+            large = index
+            left = large * 2 + 1
+            right = large * 2 + 2
+            if left < size and arr[left] > arr[large]:
+                large = left
+            if right < size and arr[right] > arr[large]:
+                large = right
+            if large != index:
+                arr[large], arr[index] = arr[index], arr[large]
+                heap(arr, size, large)
 
         for i in range(len(array) - 1, -1, -1):
-            heapify(array, len(array), i)
-        for i in range(len(array) - 1, 0, -1):
-            array[i], array[0] = array[0], array[i]
-            heapify(array, i, 0)
+            heap(array, len(array), i)
+        for i in range(len(array) - 1, -1, -1):
+            array[0], array[i] = array[i], array[0]
+            heap(array, i, 0)
         return array
 
     @staticmethod
-    def shell_sort(array: list[int | float | str]) -> list[int | float | str]:
+    def shell_sort(array: list[int | str | float], clean_func=False) -> list[int | str | float]:
+        if clean_func:
+            return array.copy()
         middle = len(array) // 2
         while middle:
             for i in range(middle, len(array)):
                 index = i
                 temp = array[index]
-                while index >= middle and array[index - middle] > temp:
+                while index - middle >= 0 and array[index - middle] > temp:
                     array[index] = array[index - middle]
                     index = index - middle
                 array[index] = temp
-            middle = middle // 2
+            middle //= 2
         return array
 
     @staticmethod
-    def merge_sort(array: list[int | float | str]) -> list[int | float | str]:
-        def merge(arr1: list[int | float | str], arr2: list[int | float | str]) -> list[int | float | str]:
-            result = []
-            while arr1 and arr2:
-                if arr1[0] > arr2[0]:
-                    result.append(arr2.pop(0))
-                else:
-                    result.append(arr1.pop(0))
-            return result + arr1 + arr2
+    def radix_sort(array: list[int | str | float], clean_func=False) -> list[int | str | float]:
+        if clean_func:
+            array = array.copy()
 
-        def heapify(array0):
-            if len(array0) <= 1:
-                return array0
-            return merge(heapify(array0[:len(array0) // 2]), heapify(array0[len(array0) // 2:]))
-
-        return heapify(array)
-
-    @staticmethod
-    def quick_sort(array: list[int | float | str]) -> list[int | float | str]:
-        def heapify(array0):
-            if len(array0) <= 1:
-                return array0
-            elif len(array0) == 2:
-                return [min(array0), max(array0)]
-            seed = array0[len(array0) // 2]
-            low, middle, high = [], [], []
-            for i in array0:
-                if i > seed:
-                    high.append(i)
-                elif i == seed:
-                    middle.append(i)
-                elif i < seed:
-                    low.append(i)
-            return heapify(low) + middle + heapify(high)
-
-        return heapify(array)
-
-    @staticmethod
-    def radix_sort(data: list[int]) -> list[int]:
-        def _max(array: list[int]) -> int:
-            array = iter(array)
-            mx = next(array)
-            for elem in data:
-                if mx < elem:
-                    mx = elem
-            return mx
-    
-        def radix(array: list[int], step: int) -> tuple[list[list[int]], list[list[int]]]:
-            ost = [[] for _ in range(10)]
-            _ost = [[] for _ in range(10)]
-            for elem in array:
-                if elem >= 0:
-                    ost[i//step % 10].append(i)
-                else:
-                    _ost[i//step % 10].append(i)
-            return _ost, ost
-    
-        def join(array: list[list[int]]) -> list[int]:
+        def join(arrays):
             res = []
-            for elem in array:
-                res += elem
+            for i in arrays:
+                res += i
             return res
-        max_num = _max(data)
-        i = 1
-        while max_num:
-            new_data = radix(data, i)
-            data = join(new_data[0]) + join(new_data[1])
-            i = i*10
-            max_num //= 10
-        return data
 
-    
+        def radix(arr, lvl):
+            _ost = [[] for _ in range(10)]
+            ost = [[] for _ in range(10)]
+            for i in arr:
+                if i >= 0:
+                    ost[i // lvl % 10].append(i)
+                elif i < 0:
+                    _ost[abs(i) // lvl % 10].append(i)
+            return join(_ost[::-1]) + join(ost)
+
+        mx = max(array)
+        step = 1
+        while mx:
+            array = radix(array, step)
+            step *= 10
+            mx //= 10
+        return array
+
     @staticmethod
-    def base_sort(array: list[int | float | str]) -> list[int | float | str]:
-        return sorted(array)
+    def merge_sort(array: list[int | str | float], clean_func=False) -> list[int | str | float]:
+        if clean_func:
+            array = array.copy()
+
+        def decompose(arr):
+            if len(arr) <= 1:
+                return arr
+            return merge(decompose(arr[:len(arr) // 2]), decompose(arr[len(arr) // 2:]))
+
+        def merge(lst1, lst2):
+            result = []
+            while lst1 and lst2:
+                if lst2[0] >= lst1[0]:
+                    result.append(lst1.pop(0))
+                elif lst2[0] < lst1[0]:
+                    result.append(lst2.pop(0))
+            return result + lst1 + lst2
+
+        return decompose(array)
 
     @staticmethod
-    def testing_all(n=10_000, data=None):
-        import random
-        import multiprocessing
-        funcs = [Sort.timings(func) for func in
-                 [Sort.base_sort, Sort.quick_sort, Sort.heap_sort, Sort.shell_sort, Sort.merge_sort, Sort.insertion_sort,
-                  Sort.gnome_sort, Sort.shake_sort, Sort.selection_sort, Sort.bubble_sort, ]]
-        if data is None:
-            data = [random.randint(-1000, 1000) for _ in range(n)]
-        data = [data.copy() for _ in range(len(funcs) + 1)]
-        processors = [func(arr) for func, arr in zip(funcs, data)]
+    def quick_sort(array: list[int | str | float], clean_func=False) -> list[int | str | float]:
+        if clean_func:
+            array = array.copy()
+
+        def quick(arr):
+            if len(arr) <= 1:
+                return arr
+            cur = arr[len(arr) // 2]
+            data0 = [[], [], []]
+            for i in arr:
+                if i > cur:
+                    data0[2].append(i)
+                elif i == cur:
+                    data0[1].append(i)
+                elif i < cur:
+                    data0[0].append(i)
+            return quick(data0[0]) + data0[1] + quick(data0[2])
+
+        return quick(array)
+
+    class Timer(object):
+        def __init__(self, target):
+            self.target = target
+            try:
+                functools.update_wrapper(self, target)
+            except:
+                raise TypeError
+
+        def __call__(self, mass, db):
+            start = time.time()
+            result = self.target(mass)
+            end = time.time()
+            db[mp.current_process().ident] = {"result": result, "time": end - start, "name": self.target.__name__}
+
+    @staticmethod
+    def is_one_type_in_list(array):
+        x = type(array[0])
+        if all(isinstance(i, x) for i in array):
+            return True
+        return False
+
+    @staticmethod
+    def testing_all_sorts(mass: list[int | str | float], res):
+        funcs = [Sorts.buble_sort, Sorts.selection_sort, Sorts.insertion_sort, Sorts.shake_sort, Sorts.gnome_sort,
+                 Sorts.shell_sort, Sorts.heap_sort, Sorts.radix_sort, Sorts.merge_sort, Sorts.quick_sort]
+        funcs_with_timing = [Sorts.Timer(func) for func in funcs]
+        process = [mp.Process(target=func, args=(mass.copy(), res)) for func in
+                   funcs_with_timing]  
+        for i in process:
+            i.start()
+        for i in process:
+            i.join()
 
 
-if '__main__' == __name__:
-    RESULT = multiprocessing.Manager().dict()
-    N = 10_000  # randomize elements for testing
-    Sort.testing_all(N)
-    p = RESULT.values()[0]
-    print(all([p == i for i in RESULT.values()]))
-
+if __name__ == '__main__':
+    proxy = mp.Manager().dict()
+    data = [random.randint(-1000, 10000) for i in range(10000)]
+    Sorts.testing_all_sorts(data, proxy)
+    for i in proxy:
+        print(proxy[i]['name'], proxy[i]['time'], )

@@ -36,7 +36,63 @@ def get_all_files(path:str,res=[])->list[str]:
         res.append(path)
     return res
       
+def go_to_labirint_dfs(array: list[list[int]],col=0,row=0):
+    def can_go(x:int, y:int,max_x:int, max_y:int):
+        if x >=max_x or y>=max_y or x<0 or y<0:
+            return False
+        return True
+    if array[x][y]==1:
+        return 'WIN'
+    for x,y in [(col+1,row),(col-1,row),(col,row+1),(col,row+1),(col,row-1)]:
+        if can_go(x,y):
+            if array[x][y] == 0:
+                array[x][y] == 8
+                go_to_labirint_dfs(array,x,y)
+            
+def binary_search(array, search, l=0):
+    if array:
+        seed = len(array)//2
+        if array[seed] == search:
+            return l+seed
+        elif array[seed] > search:
+            return binary_search(array, search, l+seed)
+        elif array[seed] < search:
+            return binary_search(array, search, l)
+    return -1
+        
+def bsf(tree,search):
+    root = [tree.pop()]
+    while root:
+        temp = root.pop(0)
+        if temp.val == search:
+            return 'find'
+        if temp.left:
+            root.append(left)
+        if temp.right:
+            root.append(right)
+    return -1
 
+def dfs(tree, search):
+    if tree.val == search:
+        return 'find'
+    if tree.left:
+        dfs(tree.left, search)
+    if tree.right:
+        dfs(tree.right, search)
+    return -1
 
+def search_keys(graph, search):
+    if search in dicts:
+        return dicts[search]
+    if isinstance(dicts[search],int):
+        return dicts[search]
+    dicts[search]=sum(search_keys(graph,sf) for sf in dicts[search])
+    return dicts[search]
+
+if __name__=='__main__':
+    graph = {"A":1,"B":["A","C","D"],"C":["A","D","E"],"E":["D"],"D":["A"],"F":["A","B","C","E","G"],"G":["B","C","E"]}
+    dicts={}
+    search_keys(graph,"G")
+    
 
 

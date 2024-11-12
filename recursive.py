@@ -89,19 +89,17 @@ def search_keys(graph, search):
     dicts[search]=sum(search_keys(graph,sf) for sf in dicts[search])
     return dicts[search]
 
-
-def can_fill(array,x,y):
-    if x >= 0 and x<len(array[0]) and y >= 0 and y<len(array):
-        if array[y][x] == 0:
-            return True
-    return False
-
-
 def fill_data(array, x, y):
     for x0, y0 in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
         if can_fill(array, x+x0, y+y0):
             array[y+y0][x+x0] = '#'
             fill_data(array, x+x0, y+y0)
+    def can_fill(array,x,y):
+        if x >= 0 and x<len(array[0]) and y >= 0 and y<len(array):
+            if array[y][x] == 0:
+                return True
+        return False
+
 
 
 

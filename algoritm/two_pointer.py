@@ -1,8 +1,9 @@
+import time
 def test(func,*args):
+    start_it = time.time()
     print("[start testing]", func.__name__)
     print(f"[{str(func(*args))}]")
-    print("[end testing]", func.__name__)
-    print()
+    print("[end testing]", func.__name__,time.time()-start_it)
 
 def merge_to_list(lst1:list[int|str], lst2:list[int|str])->list[int|str]:
     l = 0

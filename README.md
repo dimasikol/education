@@ -11,6 +11,10 @@ education/algoritm, sort, structure and patterns.
     + **8. heap sort**
     + **9. quick sort**
     + **10. radix sort**
+    + **11. counter sort**
+    + **12. bucket sort**
+    + **13. cube sort**
+    + **14. tim sort**
 - [structure]
   + **1. stack**
   + **2. queue**
@@ -24,6 +28,9 @@ education/algoritm, sort, structure and patterns.
   + **10. heap**
 - [algorithm]
   + **binary search**
+  + **kadane algorithm**
+  + **prefix sum algorithm**
+  + **two pointer algorithm**
   + **dijkstra algorithm**
   + **eller algorithm**
   + ** **

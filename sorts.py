@@ -204,9 +204,38 @@ class Sorts:
                 elif i < cur:
                     data0[0].append(i)
             return quick(data0[0]) + data0[1] + quick(data0[2])
-
         return quick(array)
+    
+    @staticmethod
+    def bucket_sort(array):
+        if len(array)==2:
+            return [min(array), max(array)]
+        elif len(array)<=1:
+            return array
+        mx = mn = array[0]
+        for i in range(len(array)):
+            if array[i] > mx:
+                mx = array[i]
+            if array[i] < mn:
+                mn = array[i]
+        seed = (mx+mn)//2
+        bucket_min = []
+        bucket_max = []
+        for i in range(len(array)):
+            if array[i] > seed:
+                bucket_max.append(array[i])
+            else:
+                bucket_min.append(array[i])
+        return bucket_sort(bucket_min) + bucket_sort(bucket_max)
+    
+    @staticmethod
+    def cube_sort(array):
+        pass
 
+    @staticmethod
+    def counter_sort(array):
+        pass
+    
     class Timer(object):
         def __init__(self, target):
             self.target = target
@@ -231,7 +260,7 @@ class Sorts:
     @staticmethod
     def testing_all_sorts(mass: list[int | str | float], res):
         funcs = [Sorts.buble_sort, Sorts.selection_sort, Sorts.insertion_sort, Sorts.shake_sort, Sorts.gnome_sort,
-                 Sorts.shell_sort, Sorts.heap_sort, Sorts.radix_sort, Sorts.merge_sort, Sorts.quick_sort]
+                 Sorts.shell_sort, Sorts.heap_sort, Sorts.radix_sort, Sorts.merge_sort, Sorts.quick_sort, Sort.bucket_sort, Sort.cube_sort, Sort.counter_sort]
         funcs_with_timing = [Sorts.Timer(func) for func in funcs]
         process = [mp.Process(target=func, args=(mass.copy(), res)) for func in
                    funcs_with_timing]  
@@ -243,7 +272,7 @@ class Sorts:
 
 if __name__ == '__main__':
     proxy = mp.Manager().dict()
-    data = [random.randint(-1000, 10000) for i in range(10000)]
+    data = [random.randint(-10000, 10000) for i in range(10000)]
     Sorts.testing_all_sorts(data, proxy)
     for i in proxy:
         print(proxy[i]['name'], proxy[i]['time'], )

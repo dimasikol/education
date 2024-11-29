@@ -1,7 +1,7 @@
 from collections import OrderedDict
 import random
 
-def create_tr(array:list[str],type_tr_th_td:str='td')->str:
+def create_tr(array,type_tr_th_td='td'):
     tr = f'<tr><{type_tr_th_td}>'+f'</{type_tr_th_td}><{type_tr_th_td}>'.join(array)+f'</{type_tr_th_td}></tr>'
     return tr
 
@@ -82,8 +82,13 @@ class Task20():
                 for l,r in zip(self._data_dict[i[0]],self._data_dict[i[1]]):
                     res[i].append(int(i[2](l, r)))
             last_i = i
-        self._helpify_quiz = quiz
+        self._helpify_quiz = self.data+list(quiz.values())
         self.res = res
-        self.quiz = create_tr(self._helpify_quiz.values())
+        self.__data = iter(self._data)
+        self.selected = ''.join([create_tr(list(map(str,next(self.__data)))+[f"<select name='to_js{i}'> <option value=''> </option><option value='0'>0</option>`<option value='1'>1</option></select>" for i in range(self.len_operation)]) for k in range(len(self._data_dict['x']))])
+        self.quiz = "<table>"+create_tr(self._helpify_quiz)+self.selected+"</table>"
+        self.answer = self.res.values()
+        print(self.answer)
+        print(self.quiz)
 a = Task20()
 

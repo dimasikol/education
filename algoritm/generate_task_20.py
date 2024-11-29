@@ -1,21 +1,6 @@
-from collections import OrderedDict
-import random
-
-def create_tr(array,type_tr_th_td='td'):
-    tr = f'<tr><{type_tr_th_td}>'+f'</{type_tr_th_td}><{type_tr_th_td}>'.join(array)+f'</{type_tr_th_td}></tr>'
-    return tr
-
-class Operation:
-    def __init__(self,x,y,operation):
-        self.x = x
-        self.y = y
-        self.operation = operation
-
-    def __str__(self):
-        return f"adad"
-
 class Task20():
     def __init__(self,lvl=1):
+        self.answer = []
         self.data = ["x", "y", "w", "z","d"][:random.randint(2,2+lvl)]
         self._data = [list(map(int,bin(i)[2:].rjust(len(self.data),'0'))) for i in range(2**len(self.data))]
         self._data_dict = {k:[self._data[i][index] for i in range(len(self._data))] for index,k in enumerate(self.data)}
@@ -24,9 +9,8 @@ class Task20():
         self.stack_func = random.choices(self.funcs, k=self.len_operation)
         self.some_choice = []
         self.operation = self.create_quiz()
-        print(self._answer())
-        self.answer = []
         self.description = "coming soon"
+        self._answer()
     def neg(self,elem):
         return not elem
 
@@ -66,7 +50,7 @@ class Task20():
         operation = self.operation[:]
 
         res = OrderedDict()
-        helpify = {"_or":"OR","_and": "AND","_xor":"XOR",'_sledov':"->",'_equel':"=="}
+        helpify = {"_or":"v","_and": "^","_xor":"⨁",'_sledov':"→",'_equel':"≡"}
         quiz = OrderedDict()
         for i in operation:
             if res:
@@ -84,11 +68,11 @@ class Task20():
             last_i = i
         self._helpify_quiz = self.data+list(quiz.values())
         self.res = res
+        self.quiz=f"Решите логическую задачу, подставив правильно логические значения {self._helpify_quiz[-1]}.<br>"
         self.__data = iter(self._data)
-        self.selected = ''.join([create_tr(list(map(str,next(self.__data)))+[f"<select name='to_js{i}'> <option value=''> </option><option value='0'>0</option>`<option value='1'>1</option></select>" for i in range(self.len_operation)]) for k in range(len(self._data_dict['x']))])
-        self.quiz = "<table>"+create_tr(self._helpify_quiz)+self.selected+"</table>"
-        self.answer = self.res.values()
-        print(self.answer)
-        print(self.quiz)
-a = Task20()
 
+        self.selected = ''.join([create_tr(list(map(str,next(self.__data)))+[f"<select name='to_js{i}'> <option value=''> </option><option value='0'>0</option>`<option value='1'>1</option></select>" for i in range(self.len_operation)]) for k in range(len(self._data_dict['x']))])
+        self.quiz += "<table>"+create_tr(self._helpify_quiz)+self.selected+"</table>"
+        self.answer = list(self.res.values())
+        print(self.quiz)
+        print(self.answer)

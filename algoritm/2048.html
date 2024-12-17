@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+
+<body>
+<style>
+    #game2024{
+        background-color: grey;
+    }
+    .inline {
+        display: inline;
+        background-color: grey;
+    }
+</style>
+
+<div id="game2024">
+    <div class="row">
+        <div class="inline" id="id00"></div>
+        <div class="inline" id="id01"></div>
+        <div class="inline" id="id02"></div>
+        <div class="inline" id="id03"></div>
+    </div>
+    <div class="row">
+        <div class="inline" id="id10"></div>
+        <div class="inline" id="id11"></div>
+        <div class="inline" id="id12"></div>
+        <div class="inline" id="id13"></div>
+    </div>
+    <div class="row">
+        <div class="inline" id="id20"></div>
+        <div class="inline" id="id21"></div>
+        <div class="inline" id="id22"></div>
+        <div class="inline" id="id23"></div>
+    </div>
+    <div class="row">
+        <div class="inline" id="id30"></div>
+        <div class="inline" id="id31"></div>
+        <div class="inline" id="id32"></div>
+        <div class="inline" id="id33"></div>
+    </div>
+</div>
+
+</body>
+<script>
+    class Grid{
+        constructor(size){
+            this.size = size;
+            this.table = [[2,2,2,2],[2,2,2,2],[2,2,2,2],[2,2,2,0],[0,0,0,0]];
+            this.empty = [];
+        }
+
+        swipe(){
+            for (let i=0; i<this.size;i++){
+                console.log('test');
+                for (let j=this.size-1;j>0;j--){
+                    if (this.table[i][j]!=0 && this.table[i][j]==this.table[i][j-1]){
+                        this.table[i][j] = this.table[i][j-1]*2;
+                        this.table[i][j-1] = 0;
+                        break;
+                    }
+                }
+                let cur = this.table[i].filter((x) => x!=0);
+                let u = this.size;
+                while (cur.length !== 0){
+                    this.table[i][u] = cur.pop();
+                    u=u-1;
+                }
+                while (u>-1){
+                    this.table[i][u] = 0;
+                    u=u-1;
+                }
+            }
+        }
+        swipe_left(){
+            this.swipe();
+        }
+        swipe_right(){
+            this.rotate("right");
+            this.swipe();
+            this.rotate("right");
+        }
+        swipe_up(){
+            this.rotate("down");
+            this.swipe();
+            this.rotate("up");
+        }
+        swipe_down(){
+            this.rotate("up");
+            this.swipe();
+            this.rotate("down");
+        }
+
+        rotate(type){
+            if (type=="up")
+            this.table = this.table[0].map((val, index) => this.table.map(row => row[row.length-1-index]));
+            if (type=="down")
+            this.table = this.table[0].map((val, index) => this.table.map(row => row[index]).reverse())
+            if (type=="right"){
+                this.table = this.table[0].map((val, index) => this.table.map(row => row[row.length-1-index]));
+                this.table = this.table[0].map((val, index) => this.table.map(row => row[row.length-1-index]));
+            }
+        }
+        add_elem(){
+            let cur = [];
+            let c = 0;
+            for (let i=0; i<this.size;i++){
+                for (let j=0; i<this.size;j++){
+                    if (this.table[i][j]===0)
+                    cur.push(c);
+                    c++;
+                }
+            }
+            if (cur.length!==0){
+                let ind = Math.floor(Math.random() * cur.length);
+                this.table[cur[ind]/this.size][cur[ind]%this.size] = 2+(2*Math.floor(Math.random()*1));
+            }
+            else
+            console.log("LOZE");
+        }
+        draw(){
+            for (let i =0; i<this.size;i++){
+                for (let j=0; j<this.size;j++){
+                    let elem = document.getElementById(`id${i}${j}`);
+                    elem.innerHTML = this.table[i][j];
+                    console.log('add');
+                }
+            }
+        }
+    }
+
+    let a = new Grid(4);
+    a.swipe_right();
+    a.swipe_right();
+    a.swipe_up();
+    a.swipe_up();
+    console.log(a.table);
+    console.log(a.table);
+    a.draw();
+    a.swipe_up();
+    a.swipe_up();
+    a.swipe_left();
+    a.draw();
+
+document.addEventListener('keydown', (e) => {
+        console.log(`Нажата клавиша: ${e.key}`);
+        if (e.key == "ArrowRight"){
+            a.swipe_right();
+        }
+        if (e.key=="ArrowLeft"){
+            a.swipe_left();
+        }
+        if (e.key=="ArrowDown"){
+        a.swipe_down();
+
+        }
+        if (e.key=="ArrowUp"){
+            a.swipe_up();
+        }
+        a.draw();
+
+    }
+    );
+
+</script>
+</html>

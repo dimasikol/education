@@ -5,59 +5,45 @@
     <title>Title</title>
 </head>
 
-
 <body>
 <style>
+    p{
+        font-size: 16px;
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+        vertical-align: middle;
+    }
     #game2048{
         background-color: grey;
         position: fixed;
-        top: 30%;
-        left:30%;
-        width:420px;
-        height:420px;
+        width:200px;
+        height:200px;
+        margin: 0px;
+        padding: 0px;
+        left: 340px;
+        top: 140px;
     }
     .inline {
         display: inline-block;
         background-color: aquamarine;
-        width:100px;
-        height:100px;
-        margin: auto;
-        padding: auto;
         text-align: center;
+        vertical-align: middle;
+        line-height: 50px;
+        width:50px;
+        height:50px;
+        margin: 0px;
+        padding: 0px;
         color: black;
         font-family: 'Courier New', Courier, monospace;
-        font-size: 50px;
+        font-size: 25px;
     }
 </style>
-
+<div><p>Если сложность 4, вы авторизованы и набрали 2048, то вы получите отлично по предмету информатика.</p>
+<p>Для управления используйте стрелочки на клавиатуре ←↑→, "z" для отмены хода</p></div>
+<div id="cancel_move">0</div>
 <div id="game2048">
-    <!-- <div class="row">
-        <div class="inline block" id="id00"></div>
-        <div class="inline" id="id01"></div>
-        <div class="inline" id="id02"></div>
-        <div class="inline" id="id03"></div>
-    </div>
-    <div class="row">
-        <div class="inline" id="id10"></div>
-        <div class="inline" id="id11"></div>
-        <div class="inline" id="id12"></div>
-        <div class="inline" id="id13"></div>
-    </div>
-    <div class="row">
-        <div class="inline" id="id20"></div>
-        <div class="inline" id="id21"></div>
-        <div class="inline" id="id22"></div>
-        <div class="inline" id="id23"></div>
-    </div>
-    <div class="row">
-        <div class="inline" id="id30"></div>
-        <div class="inline" id="id31"></div>
-        <div class="inline" id="id32"></div>
-        <div class="inline" id="id33"></div>
-    </div> -->
 </div>
-
-<input id="size_block" type="number" placeholder="4" min="3" max="10">
+<input id="size_block" type="number" value="4" min="3" max="10">
 <input id="start"  type="button" value="restart">
 </body>
 <script>
@@ -66,23 +52,50 @@
         constructor(size){
             this.size = size;
             this.table = Array(this.size).fill().map(() => Array(this.size).fill(0));
+            //this.table = [[128,1024,2048,4096],[8192,16384,32768,65536],[131072,262144,0,0],[0,0,0,0]];
             this.empty = [];
             this.color = {
-                        0:"#f0dfce",
-                        2:"#fadbc0",
-                        4:"#ffebcd",
-                        8:"#ffc266",
-                        16:"#ff9900",
-                        32:"#d99184",
-                        64:"#cc6d5c",
-                        128:"#914834",
-                        256:"#7abdff",
-                        512:"#b6e1fc",
-                        1024:"#ccccff",
-                        2048:"#52bafa",
-                        4096:"#00c0eb",
-                    }
-
+                0:"#f0dfce",
+                2:"#fadbc0",
+                4:"#ffebcd",
+                8:"#ffc266",
+                16:"#ff9900",
+                32:"#d99184",
+                64:"#cc6d5c",
+                128:"#914834",
+                256:"#7abdff",
+                512:"#b6e1fc",
+                1024:"#ccccff",
+                2048:"#52bafa",
+                4096:"#00c0eb",
+                8192:"#00a8ff",
+                16384:"#00a8ff",
+                32768:"#00a8ff",
+                65536:"#00a8ff",
+                131072:"#00a8ff",
+                262144:"#00a8ff",
+            }
+            this.size_font = {
+                0:"30pt",
+                2:"32pt",
+                4:"32pt",
+                8:"32pt",
+                16:"28pt",
+                32:"28pt",
+                64:"28pt",
+                128:"20pt",
+                256:"20pt",
+                512:"20pt",
+                1024:"16pt",
+                2048:"16pt",
+                4096:"16pt",
+                8192:"16pt",
+                16384:"12pt",
+                32768:"12pt",
+                65536:"12pt",
+                131072:"10pt",
+                262144:"10pt",
+            }
             for (let i=0;i<this.size;i++){
                 let elem = document.createElement("div");
                 elem.className = "row";
@@ -93,17 +106,18 @@
                     block.id = `id${i}${j}`;
                     block.className = 'inline';
                     elem.appendChild(block);
-                    
-                }    
+
+                }
             }
+            this.stack = [];
         }
-
-
         swipe(){
             for (let i=0; i<this.size;i++){
                 for (let j=this.size-1;j>0;j--){
                     if (this.table[i][j]!=0 && this.table[i][j]==this.table[i][j-1]){
                         this.table[i][j] = this.table[i][j-1]*2;
+                        if (this.table[i][j]===2048)
+                                alert("YOU WIN!");
                         this.table[i][j-1] = 0;
                         break;
                     }
@@ -123,24 +137,28 @@
         }
         swipe_right(){
             this.swipe();
+            this.add_to_stack();
+
         }
         swipe_left(){
             this.rotate("left");
             this.swipe();
             this.rotate("down");
             this.rotate("down");
+            this.add_to_stack();
         }
         swipe_up(){
             this.rotate("down");
             this.swipe();
             this.rotate("up");
+            this.add_to_stack();
         }
         swipe_down(){
             this.rotate("up");
             this.swipe();
             this.rotate("down");
+            this.add_to_stack();
         }
-
         rotate(type){
             if (type=="up")
             this.table = this.table[0].map((val, index) => this.table.map(row => row[row.length-1-index]));
@@ -158,54 +176,63 @@
             for (let i=0; i<this.size; i++){
                 for (let j=0; j<this.size; j++){
                     if (this.table[i][j]===0)
-                        cur.push(c);
+                    cur.push(c);
                     c=c+1;
                 }
             }
             if (cur.length!==0){
                 let ind = Math.floor(Math.random() * cur.length);
-                this.table[Math.floor(cur[ind]/this.size)][cur[ind]%this.size] = 2 + (2* (Math.floor(Math.random()*10)%10==0));
+                this.table[Math.floor(cur[ind]/this.size)][cur[ind]%this.size] = 2 + (2* (Math.floor(Math.random()*10)%5==0));
             }
-            else
-                if (this.check_lose())
-                    alert("you lose")
+            else{
+            if (this.check_lose())
+                alert("you lose")
+            }
         }
-
         draw(){
+            let cancel_move = document.getElementById("cancel_move");
+            cancel_move.innerHTML = `${this.stack.length}`;
             for (let i =0; i<this.size;i++){
                 for (let j=0; j<this.size;j++){
                     let elem = document.getElementById(`id${i}${j}`);
-                    elem.style.backgroundColor = this.color[this.table[i][j]];    
+                    elem.style.backgroundColor = this.color[this.table[i][j]];
+                    elem.style.fontSize = this.size_font[this.table[i][j]];
                     elem.innerHTML = this.table[i][j]!==0?this.table[i][j]:"&ensp;";
                 }
             }
         }
         check_lose(){
-            for (let i=1; i<this.size-1; i++){
-                for (let j=1; j<this.size-1; j++){
-                    if  ((this.table[i][j]===this.table[i][j-1])
-                     || (this.table[i][j]===this.table[i-1][j])
-                     || (this.table[i][j]===this.table[i+1][j])
-                     || (this.table[i][j]===this.table[i][j+1]))
-                        return 0;
-                }           
-            }
-            for (let i=0; i<this.size;i++){
-                for (let j=0; j<this.size-1;j++){
-                    if (i<this.size){
-                        if (this.table[i][j]==this.table[i][j+1] || this.table[i][j]==[i+1][j])
-                        return 0;
-                    }
-                    else{
-                        if (this.table[i][j]==this.table[i][j+1]){
-                            return 0;
+            for (let i=0; i<this.size; i++){
+                for (let j=0; j<this.size; j++){
+                        if (j-1>=0){
+                            if (this.table[i][j]===this.table[i][j-1])
+                                   return 0;}
+                        if (i-1>=0){
+                            if (this.table[i][j]===this.table[i-1][j])
+                                    return 0;}
+                        if (i+1<this.size){
+                            if (this.table[i][j]===this.table[i+1][j])
+                                return 0;}
+                        if (j+1<this.size){
+                            if (this.table[i][j]===this.table[i][j+1])
+                                return 0;
                         }
-                    }
                 }
             }
 
-
             return 1;
+        }
+        add_to_stack(){
+            console.log(this.stack);
+            if (this.stack.length>10)
+                this.stack.shift();
+            this.stack.push(this.table);
+        }
+        get_prev(){
+
+            if (this.stack.length>2)
+                this.stack.pop();
+                this.table = this.stack.pop();
         }
     }
     var a = new Grid(4);
@@ -220,23 +247,24 @@
         }
         if (e.key=="ArrowDown"){
             a.swipe_down();
-
         }
         if (e.key=="ArrowUp"){
             a.swipe_up();
         }
+        if (e.key=="z"){
+            a.get_prev();
+        }
         a.draw();
-
     }
     );
     start_game.addEventListener('click',(e)=> {
-        let r = document.getElementById('size_block').value;
-        console.log(r);
-        game = document.getElementById('game2048');        
+        let r = Number(document.getElementById('size_block').value);
+        game = document.getElementById('game2048');
+        game.style.width = `${r*50}px`;
+        game.style.height = `${r*50}px`;
         game.innerHTML='';
         a = new Grid(Number(r));
         a.draw();
-
     });
 
 </script>

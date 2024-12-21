@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+
+<body>
+<style>
+    #sudoku{
+
+        text-align:center;
+
+    }
+    .inline {
+        display: inline;
+        background-color: grey;
+    }
+    .input_sudoku{
+        width:50px;
+        height:50px;
+        text-align:center;
+        font-size:25px;
+    }
+</style>
+
+<div id="sudoku">
+</div>
+
+<input type="button" id="check" value="check">
+</body>
+<script>
+    class Grid{
+        constructor(size,lvl=1){
+            this.empty_data = new Set();
+            this.empty = [];
+            this.live = 3;
+            this.size = size;
+            this.lvl = lvl;
+            this.table = this.create_table(size);
+            this._table = [];
+            this.generate();
+            this.create_table2();
+
+
+        }
+        create_table(size){
+            let data = [];
+            for (let i=0; i<size*size; i++){
+                data.push([]);
+                for (let j=0; j<size*size; j++){
+                    data[i].push((i*size+Math.floor(i/size)+j)%(size*size)+1);
+                }
+            }
+            return data;
+        }
+        show_table(){
+            let div_sudoku = document.getElementById("sudoku");
+            for (let i=0; i<this.size*this.size; i++){
+                let div_sudoku_column = document.createElement("div");
+                div_sudoku.appendChild(div_sudoku_column);
+                for (let j=0; j<this.size*this.size; j++){
+                    let input_sudoku = document.createElement("input");
+                    input_sudoku.id = `id${i}${j}`;
+                    input_sudoku.className = 'input_sudoku';
+                    input_sudoku.type='number';
+
+                    input_sudoku.min='1';
+                    input_sudoku.max='9';
+                    if  (this._table[i][j] !==0){
+                        input_sudoku.value = this._table[i][j];
+                        input_sudoku.disabled  = true;
+
+                    }
+                    div_sudoku_column.appendChild(input_sudoku);
+                }
+            }
+        }
+        transposition(){
+            this.table=this.table[0].map((val, index) => this.table.map(row => row[index]).reverse())
+        }
+        get_l_r(){
+            let cur,l,r;
+            while (l===r){
+                cur = Math.floor(Math.random()*(this.size));
+                l = Math.floor(cur/(this.size*this.size));
+                r = cur%(this.size*this.size);
+            }
+            return [l,r];
+        }
+        swap_column(){
+            let buffer;
+            for (let i=0; i<this.size*this.size;i=i+this.size){
+                for (let k=0; k<2;k++){
+                    let cur = this.get_l_r();
+                    let l = i+cur[0];
+                    let r = i+cur[1];
+                    buffer = this.table[l];
+                    this.table[l] = this.table[r];
+                    this.table[r] = buffer;
+               }
+            }
+        }
+        swap_row(){
+            this.transposition();
+            this.swap_column();
+            this.transposition();
+        }
+        create_table2(){
+            let cur = {3:{1: 38, 2: 55, 3: 63},4:{1: 87, 2: 110, 3: 163},5:{1: 113, 2: 163, 3: 203}};
+            let empty_ceil = cur[this.size][this.lvl];
+            let rand;
+            let mx = this.size*this.size*this.size*this.size;
+            while (this.empty_data.size<empty_ceil){
+                this.empty_data.add(Math.floor(Math.random()*(mx)));
+            }
+            for (let i=0; i<this.size*this.size; i++){
+                this._table.push([]);
+                for (let j=0; j<this.size*this.size; j++){
+                    this._table[i][j] = this.table[i][j];
+                }
+            }
+            for(let elem of this.empty_data){
+                this._table[Math.floor(elem/(this.size*this.size))][elem%(this.size*this.size)] = 0;
+            }
+        }
+        generate(){
+            let arrFunc = ['swap_column', 'swap_row'];
+            for (let i=0; i<5;i++){
+                this[arrFunc[Math.floor(Math.random() * arrFunc.length)]]();
+            }
+        }
+        get_all_data(){
+            let l,r,cur;
+            for(let elem of this.empty_data){
+                l = Math.floor(elem/(this.size*this.size));
+                r = elem%(this.size*this.size);
+                cur = document.getElementById(`id${l}${r}`).value;
+                if (Number(cur)!==this.table[l][r])
+                    return false;
+            }
+            return true;
+        }
+        check(){
+            if (this.live!==0){
+                if (this.get_all_data())
+                    alert('YOU WIN');
+                else{
+                    this.live--;
+                    alert(`You wrong you have ${this.live} attempt. try again`);
+                }
+
+            }
+            else{
+                alert('YOU LOSE if you want achive pref F5 and try again');
+            }
+        }
+    }
+    let sudoku = new Grid(3,1);
+    sudoku.show_table();
+    let check_button = document.getElementById('check');
+    check_button.addEventListener('click',()=>sudoku.check());
+</script>
+</html>

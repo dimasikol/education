@@ -28,15 +28,22 @@ education/algoritm, sort, structure and patterns.
   + **10. heap**
 - [algorithm]
   + **binary search**
+  + **eratosfen resheto**
+  + **evlkid algorithm**
+  + **dijkstra algorithm**
+  + **eller algorithm**
+  + **prim algorithm**
+  + **floyd-warshell algorithm**
+  + **bellman-ford algorithm**
+  + **dfs algorithm**
+  + **bfs algorithm**
+  + **ternary search**
+  + **jump search**
+  + **interpolation search**
   + **kadane algorithm**
   + **prefix sum algorithm**
   + **two pointer algorithm**
   + **dijkstra algorithm**
-  + **eller algorithm**
-  + ** **
-  + 5
-  + 6
-  + 7
 - [patterns]
   + **1. Visitor**
   + **2. Template**

@@ -22,7 +22,6 @@ def cube_sort(arr: list[int]):
         data_2 = [i for i in data[sq3]]
         for sq2 in counter_sort(data_2):
             result += counter_sort(data[sq3][sq2])
-            #print(data[sq3][sq2])
     return result
 if __name__ == "__main__":
     import random

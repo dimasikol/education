@@ -55,6 +55,7 @@ class Pawn(Figure):
 class Rook(Figure):
 
     def can_go(self,x,y,color,desk):
+        print('Rook')
         if (int(self.x == x) + int(self.y==y))==1:
             if self.x != x:
                 v_start = min(self.x,x)+1
@@ -83,6 +84,7 @@ class Knight(Figure):
 class Bishop(Figure):
 
     def can_go(self,x,y,color,desk):
+        print('Bish')
         if abs(self.x-x) == abs(self.y-y):
             vx = x
             vy = y
@@ -121,8 +123,12 @@ class Bishop(Figure):
         return  False
 
 
-class Queen(Figure):
-    pass
+class Queen(Bishop,Rook):
+    def can_go(self,x,y,color,desk):
+        q = Bishop.can_go(self,x,y,color,desk)
+        q2 = Rook.can_go(self,x,y,color, desk)
+        print(q,q2)
+        return q or q2
 class WKing(Figure):
     pass
 class DESK:
@@ -205,4 +211,13 @@ print(DESK0.show_desk())
 DESK0.go_to(6,1,8,3)
 print(DESK0.show_desk())
 DESK0.go_to(3,1,7,5)
+print(DESK0.show_desk())
+DESK0.go_to(7,6,5,6)
+print(DESK0.show_desk())
+
+DESK0.go_to(1,4,3,1)
+print(DESK0.show_desk())
+
+
+DESK0.go_to(8,5,7,6)
 print(DESK0.show_desk())

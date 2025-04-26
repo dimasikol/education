@@ -13,9 +13,7 @@ FIGURE
   - Bishop = B
   - Queen = Q
   - WKing = W
-
 """
-
 
 class Figure:
     def __init__(self, x, y, color):
@@ -42,23 +40,29 @@ class Figure:
         pass
 class Pawn(Figure):
     def can_go(self, x, y, color, desk):
+
         if color == 'white':
-            if self.x + 1 == x or (self.x == 2 and x == 4):
+            if (self.x == 2 and x == 4) and self.y ==y and desk[x][y]==' ':
+                return True
+            if self.x + 1 == x:
                 if desk[x][y] == ' ' and self.y == y:
                     return True
                 elif abs(self.y - y) == 1 and isinstance(desk[x][y], Figure) and desk[x][y].color != self.color:
                     return True
-            return False
+
         else:
-            if self.x == x - 1 or (self.x == 7 and x == 5):
+            if (self.x == 7 and x == 5) and self.y == y and desk[x][y] ==' ':
+                return True
+            if self.x-1 == x:
                 if desk[x][y] == ' ' and self.y == y:
                     return True
                 elif abs(self.y - y) == 1 and isinstance(desk[x][y], Figure) and desk[x][y].color != self.color:
                     return True
-            return False
+        return False
 class Rook(Figure):
 
     def can_go(self, x, y, color, desk):
+
         print('Rook')
         if (int(self.x == x) + int(self.y == y)) == 1:
             if self.x != x:

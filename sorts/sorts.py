@@ -274,7 +274,7 @@ class Sort:
             Sort.bubble_sort, Sort.selection_sort, Sort.insertion_sort,
             Sort.shake_sort, Sort.gnome_sort, Sort.count_sort, Sort.radix_sort,
             Sort.shell_sort, Sort.heap_sort, Sort.merge_sort, Sort.quick_sort,
-            Sort.bucket_sort, Sort.tim_sort
+            Sort.bucket_sort, Sort.tim_sort, Sort.quick_sort_stack, Sort.merge_sort_stack
         ]
         base = sorted(array)
         print(f"--- Тестирование массива размером {len(array)} ---")
@@ -288,12 +288,105 @@ class Sort:
             print(f"{func.__name__.rjust(20)} | {status} | Time: {elapsed:.6f}s")
         print("-" * 50)
 
+    @staticmethod
+    def merge_sort_stack(array):
+        n = len(array)
+        if n <= 1:
+            return array
+
+        # Один буфер на всё время работы
+        buffer = [None] * n
+        src = array
+        dst = buffer
+        width = 1
+
+        while width < n:
+            for left in range(0, n, 2 * width):
+                mid = min(left + width, n)
+                right = min(left + 2 * width, n)
+                # Слияние src[left:mid] и src[mid:right] в dst[left:right]
+                i, j, k = left, mid, left
+                while i < mid and j < right:
+                    if src[i] <= src[j]:
+                        dst[k] = src[i]
+                        i += 1
+                    else:
+                        dst[k] = src[j]
+                        j += 1
+                    k += 1
+                # Докладываем остаток
+                while i < mid:
+                    dst[k] = src[i]
+                    i += 1
+                    k += 1
+                while j < right:
+                    dst[k] = src[j]
+                    j += 1
+                    k += 1
+            # Меняем роли: то, что было результатом, становится источником
+            src, dst = dst, src
+            width *= 2
+
+        # Если после последнего прохода результат оказался в буфере — копируем обратно
+        if src is not array:
+            array[:] = src
+
+        return array
+
+    @staticmethod
+    def quick_sort_stack(array):
+        if len(array) <= 1:
+            return array
+
+        INSERTION_THRESHOLD = 16
+
+        def insertion_sort_range(arr, lo, hi):
+            """Сортировка вставками на отрезке [lo, hi]"""
+            for i in range(lo + 1, hi + 1):
+                key = arr[i]
+                j = i - 1
+                while j >= lo and arr[j] > key:
+                    arr[j + 1] = arr[j]
+                    j -= 1
+                arr[j + 1] = key
+
+        def partition(arr, lo, hi):
+            """Разбиение Ломуто с медианой трёх"""
+            mid = (lo + hi) // 2
+            # Сортируем тройку: arr[lo] <= arr[mid] <= arr[hi]
+            if arr[lo] > arr[mid]: arr[lo], arr[mid] = arr[mid], arr[lo]
+            if arr[lo] > arr[hi]:  arr[lo], arr[hi] = arr[hi], arr[lo]
+            if arr[mid] > arr[hi]: arr[mid], arr[hi] = arr[hi], arr[mid]
+            # Перемещаем медиану (pivot) в конец
+            arr[mid], arr[hi] = arr[hi], arr[mid]
+            pivot = arr[hi]
+            i = lo - 1
+            for j in range(lo, hi):
+                if arr[j] <= pivot:
+                    i += 1
+                    arr[i], arr[j] = arr[j], arr[i]
+            arr[i + 1], arr[hi] = arr[hi], arr[i + 1]
+            return i + 1
+
+        # Итеративный стек вместо рекурсии
+        stack = [(0, len(array) - 1)]
+        while stack:
+            lo, hi = stack.pop()
+            if hi - lo < INSERTION_THRESHOLD:
+                insertion_sort_range(array, lo, hi)
+                continue
+            p = partition(array, lo, hi)
+            if p - 1 > lo:
+                stack.append((lo, p - 1))
+            if p + 1 < hi:
+                stack.append((p + 1, hi))
+
+        return array
 
 if __name__ == '__main__':
     data100 = [random.randint(-100_000, 100_000) for _ in range(100)]
     data1000 = [random.randint(-100_000, 100_000) for _ in range(1000)]
     data10000 = [random.randint(-100_000, 100_000) for _ in range(10_000)]
 
-    # Запускаем тесты
     Sort.test_all(data100)
-    Sort.test_all(data1000)
+    Sort.test_all(data10000)

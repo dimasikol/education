@@ -22,6 +22,7 @@ education/algoritm, sort, structure and patterns.
   + **4. hash table**
   + **5. grapf**
   + **6. binary tree**
+  + **7. heap**
   + **7. RB tree**
   + **8. ABN tree**
   + **9. prefix tree** (for text)
